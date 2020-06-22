@@ -3,6 +3,8 @@
 //2、文件传输的超时；
 //3、用类还是用对象？？？
 
+const { readFileSync } = require("fs");
+
 
 
 
@@ -25,36 +27,6 @@ var received_message = [
 				name: "小明",
 				ip: "192",
 				msg: "很高兴认识大家",
-				time: "2020/6/21 19:58"
-			},
-			{
-				name: "小明",
-				ip: "192",
-				msg: "很高兴认识大家",
-				time: "2020/6/21 19:58"
-			},
-			{
-				name: "小明",
-				ip: "192",
-				msg: "很高兴认识大家",
-				time: "2020/6/21 19:58"
-			},
-			{
-				name: "小明",
-				ip: "192",
-				msg: "很高兴认识大家",
-				time: "2020/6/21 19:58"
-			},
-			{
-				name: "小明",
-				ip: "192",
-				msg: "很高兴认识大家",
-				time: "2020/6/21 19:58"
-			},
-			{
-				name: "小明",
-				ip: "192",
-				msg: "很高兴认识大家大阿福记录关健安立刻就管理会计关健安垃圾狗垃圾狗离开感觉埃里克关健安了",
 				time: "2020/6/21 19:58"
 			}
 		]
@@ -101,9 +73,10 @@ function init_socket(multicast_ip, socket, port) {
 	});
 
 	socket.on('listening', () => {
+		console.log("listening ...")
 		socket.setBroadcast(true);
 		socket.setMulticastTTL(255);
-		socket.addMembership(ip, mine.LOCAL_IP);
+		socket.addMembership(multicast_ip, mine.LOCAL_IP);
 		setInterval(() => {
 			socket.send(`$a+${mine.name}+${mine.LOCAL_IP}`, port, multicast_ip)
 		}, 60000)//每5分钟发送一次心跳信息
@@ -122,6 +95,7 @@ function init_socket(multicast_ip, socket, port) {
 	 */
 	socket.on('message', (msg, rinfo) => {
 		var message = msg.toString();
+		console.log(`${rinfo.address}[${rinfo.port}]:	${msg.toString()}`)
 		if (message.substr(0, 2) == "$a") {//如果是心跳信息
 			if (/$a\+.*\+.*/.test(message))
 				get_users(multicast_ip, message);
@@ -238,7 +212,6 @@ function is_logic_user(multicast_ip, ip) {
 			})
 		}
 	})
-	window.alert(`没有在${multicast_ip}中找到${ip}`);
 	return false;
 }
 
@@ -331,7 +304,7 @@ function get_default_socket_port(multicast_ip) {
 	})[0];
 	return {
 		socket: res.socket[0],
-		port: res.socket[0]
+		port: res.port[0]
 	}
 }
 

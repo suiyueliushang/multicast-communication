@@ -95,9 +95,10 @@ function handle_summit_text() {
 	var multicast_ip = $('#communication_title').html();
 	console.log(multicast_ip);
 	var default_socket_port = get_default_socket_port(multicast_ip);
-	console.log(document.getElementsByTagName('textarea')[0].value);
+	console.log(default_socket_port)
+	console.log($('textarea').val());
 	send_msg(default_socket_port.socket, multicast_ip, default_socket_port.port, $('textarea').val());
-	$('textarea').html("");
+	$('textarea').val("");
 }
 
 /**
