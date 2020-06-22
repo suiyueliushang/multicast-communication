@@ -81,6 +81,7 @@ function handle_member(data) {
 	$(communication_box).html(html);
 	$("#communication_box").show();
 }
+
 /**
  * 点击多播组某个成员时
  */
@@ -93,10 +94,7 @@ $("li").click(() => {
  */
 function handle_summit_text() {
 	var multicast_ip = $('#communication_title').html();
-	console.log(multicast_ip);
 	var default_socket_port = get_default_socket_port(multicast_ip);
-	console.log(default_socket_port)
-	console.log($('textarea').val());
 	send_msg(default_socket_port.socket, multicast_ip, default_socket_port.port, $('textarea').val());
 	$('textarea').val("");
 }
