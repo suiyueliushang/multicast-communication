@@ -32,20 +32,7 @@ var received_message = [
 		]
 	}
 ]
-class one_multicast_message {
-	constructor(multicast_ip, multicast_ip_message) {
-		this.multicast_ip = multicast_ip;
-		this.multicast_ip_message = multicast_ip_message;
-	}
-}
-class one_message {
-	constructor(name, ip, msg, time) {
-		this.name = name;
-		this.ip = ip;
-		this.msg = msg;
-		this.time = time;
-	}
-}
+
 var receving_files = [//当前正在接收的文件对象
 	{
 		filename: '',

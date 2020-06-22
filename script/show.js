@@ -61,7 +61,7 @@ function handle_click_summary(data) {
 	})();
 	var str = ""
 	message.forEach((item) => {
-		str += item.name + " " + item.time + '<br/>'
+		str += item.name+`(${item.ip})` + " " + item.time + '<br/>'
 		str += item.msg + '<br/><br/>';
 	})
 	$('#communication_text').html(str)
@@ -189,12 +189,14 @@ function remove_multicast_membber(multicast_ip, member_ip) {
  * @param {String} ip 
  */
 function get_name(multicast_ip, ip) {
+	var a="";
 	multicast_members.forEach((item) => {
 		if (item.multicast_ip == multicast_ip) {
 			var res = item.member.filter((key) => { return key.ip == ip })
-			if (res.length == 1)
-				return res[0].name
-			else return "";
+			if (res.length == 1){
+				a=res[0].name;
+			}
 		}
 	})
+	return a;
 }
