@@ -151,12 +151,12 @@ function send_file(socket, multicast_ip, port, file) {
 		if (err) {
 			console.log(err);
 			throw err;
-		}else{
-		socket.send(`$f+${file_name}+${file_id}+${file_size}+${file_number}`, port, multicast_ip);
-		for (var i = 0; i < file_number; i++) {
-			socket.send([`$f${i}+${file_id}+`, data.slice(i * 65500, (i + 1) * 65500)], port, multicast_ip)
-		}
-		console.log(`${file_name}已经成功发送`);
+		} else {
+			socket.send(`$f+${file_name}+${file_id}+${file_size}+${file_number}`, port, multicast_ip);
+			for (var i = 0; i < file_number; i++) {
+				socket.send([`$f${i}+${file_id}+`, data.slice(i * 65500, (i + 1) * 65500)], port, multicast_ip)
+			}
+			console.log(`${file_name}已经成功发送`);
 		}
 	});
 	return true;
@@ -196,15 +196,17 @@ function get_users(multicast_ip, msg) {
  * @param {String} ip 
  */
 function is_logic_user(multicast_ip, ip) {
+	var res;
 	multicast_members.forEach((item, index) => {
 		if (item.multicast_ip == multicast_ip) {
-			multicast_members[index].member.forEach((a, b) => {
-				if (a.ip == ip)
-					return a.if_logic;
+			multicast_members[index].member.forEach((a) => {
+				if (a.ip == ip) {
+					res = a.if_logic;
+				}
 			})
 		}
 	})
-	return false;
+	return res;
 }
 
 /**
