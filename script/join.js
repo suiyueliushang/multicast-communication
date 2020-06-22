@@ -55,6 +55,7 @@ function join_multicast(ip, port) {
 	sock = dgram.createSocket('udp4');
 	try {
 		sock.bind(port);
+		sock.send(`$a+${mine.name}+${mine.LOCAL_IP}`, port, ip)
 		init_socket(ip, sock, port);
 		mine.multicast_list.push({
 			multicast_ip: ip,
