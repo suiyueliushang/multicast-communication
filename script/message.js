@@ -93,8 +93,8 @@ function init_socket(multicast_ip, socket, port) {
 			if (message.substr(0, 2) == '$f' && /\$f.*\+.*\+.*/.test(message)) {//如果发送的是文件
 				receive_file(msg, rinfo, multicast_ip);
 			}
+			else receive_text(msg, rinfo, multicast_ip);
 		}
-		else receive_text(msg, rinfo, multicast_ip);
 	});
 
 }
