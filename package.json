@@ -18,5 +18,10 @@
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "^9.0.2"
+  },
+  "dependencies": {
+    "element-ui": "^2.13.2",
+    "jquery": "^3.5.1",
+    "silly-datetime": "^0.1.2"
   }
 }

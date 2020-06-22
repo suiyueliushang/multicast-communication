@@ -1,19 +1,68 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-    <title>Hello World!</title>
-  </head>
-  <body>
-    <h1>Hello World!</h1>
-    We are using Node.js <span id="node-version"></span>,
-    Chromium <span id="chrome-version"></span>,
-    and Electron <span id="electron-version"></span>.
 
-    <!-- You can also require other files to run in this process -->
-    <script src="./renderer.js"></script>
-  </body>
+<head>
+	<link rel="stylesheet" href="style/index.css" type="text/css" />
+	<meta charset="UTF-8">
+	<!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+	<meta http-equiv="cache-control" content="public">
+	<title>多播聊天工具</title>
+</head>
+
+<body>
+	<div class="main_window">
+		<div id="main_window_up">
+			<div id="main_window_up_left_bar">
+				<button class='left_bar_button' id="join">
+					<img src="asset/join.svg" class='left_bar_button_img' title="加入多播" />
+				</button>
+				<button class='left_bar_button' id="show">
+					<img src="asset/群聊.svg" class='left_bar_button_img' title="多播组展示" />
+				</button>
+				<button class='left_bar_button' id="mine">
+					<img src="asset/我.svg" class='left_bar_button_img' title="我的信息" />
+				</button>
+			</div>
+			<div id="main_window_up_mid_bar">
+				<div id="main_window_up_mid_bar_origin">
+				</div>
+				<div id="main_window_up_mid_bar_join" style="font-size: large;">
+					<center>加入多播组</center><br /><br />
+					<label for="join_multicast">ip address:</label><br />
+					<input type="text" name="join_multicast" id="ip_address" required='required' /><br /><br />
+					<label for="join_multicast">port:</label><br />
+					<input type="text" name="join_multicast_port" id="port" required='required' /><br />
+					<input type="submit" value="提交" id="summit_ip" />
+				</div>
+			</div>
+			<div id="main_window_up_content">
+				<div id="communication_box">
+					<div id="communication_title">
+					</div>
+					<div style="top: 20px;width: 100%;bottom: 0px;position: absolute;">
+						<div id="communication_text">
+						</div>
+						<div id="communication_send_box">
+							<div id='send_selector'>
+								<button id="select_file" onclick="handle_select_file_button()"><img
+										src='./asset/directory.png' />
+								</button>
+								<button id="summit_text" onclick="handle_summit_text()">发送</button>
+							</div>
+							<textarea></textarea>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="main_window_down">
+		</div>
+	</div>
+</body>
+<script src='./script/my.js'></script>
+<script src="./script/join.js"></script>
+<script src="./script/show.js"></script>
+<script src="./script/message.js"></script>
+
+
 </html>
