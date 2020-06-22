@@ -64,6 +64,10 @@ function join_multicast(ip, port) {
 		multicast_ip: ip,
 		member: []
 	})
+	received_message.push({
+		multicast_ip: ip,
+		multicast_ip_message: []
+	})
 	return true;
 
 }
