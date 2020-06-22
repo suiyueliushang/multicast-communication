@@ -66,7 +66,7 @@ function init_socket(multicast_ip, socket, port) {
 		socket.addMembership(multicast_ip, mine.LOCAL_IP);
 		setInterval(() => {
 			socket.send(`$a+${mine.name}+${mine.LOCAL_IP}`, port, multicast_ip)
-		}, 60000)//每5分钟发送一次心跳信息
+		}, 60000)//每1分钟发送一次心跳信息
 	});
 
 	/**
