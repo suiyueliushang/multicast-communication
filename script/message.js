@@ -251,9 +251,9 @@ function receive_file(msg, rinfo, multicast_ip) {
 			if (item.fileid == id) {
 				item.content[n] = Buffer.from(msg.toString().split("+")[2])
 				if (n == item.file_number - 1) {//当前文件收取完成
-					fs.writeFileSync(file_path + '/' + item.filename, Buffer.from(item.content));
+					fs.writeFileSync(file_path + '/' + item.filename, Buffer.concat(item.content));
 					window.alert(`${item.filename}接受完毕`);
-					receive_file.splice(index, 1);
+					receving_files.splice(index, 1);
 					received_message.forEach((a) => {
 						if (a.multicast_ip == multicast_ip)
 							a.multicast_ip_message.push({
