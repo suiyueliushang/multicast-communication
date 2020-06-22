@@ -53,21 +53,27 @@ function join_multicast(ip, port) {
 	}
 	//创建socket并加入多播组
 	sock = dgram.createSocket('udp4');
-	sock.bind(port);
-	init_socket(ip, sock, port);
-	mine.multicast_list.push({
-		multicast_ip: ip,
-		port: port,
-		socket: sock
-	});
-	multicast_members.push({
-		multicast_ip: ip,
-		member: []
-	})
-	received_message.push({
-		multicast_ip: ip,
-		multicast_ip_message: []
-	})
+	try {
+		sock.bind(port);
+		init_socket(ip, sock, port);
+		mine.multicast_list.push({
+			multicast_ip: ip,
+			port: port,
+			socket: sock
+		});
+		multicast_members.push({
+			multicast_ip: ip,
+			member: []
+		})
+		received_message.push({
+			multicast_ip: ip,
+			multicast_ip_message: []
+		})
+	} catch (e) {
+		window.alert("加入多播组出错");
+		sock.close();
+		return false;
+	}
 	return true;
 
 }
