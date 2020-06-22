@@ -90,7 +90,7 @@ function init_socket(multicast_ip, socket, port) {
 			user_leave(multicast_ip, message);
 		}
 		else if (is_logic_user(multicast_ip, rinfo.address)) {//是逻辑上的用户
-			if (message.substr(0, 3) == '$f' && /\$f.*\+.*\+.*/.test(message)) {//如果发送的是文件
+			if (message.substr(0, 2) == '$f' && /\$f.*\+.*\+.*/.test(message)) {//如果发送的是文件
 				receive_file(msg, rinfo, multicast_ip);
 			}
 		}
@@ -115,7 +115,6 @@ function send_msg(socket, multicast_ip, port, msg) {
 		return false;
 	}
 	socket.send(msg, port, multicast_ip);
-	console.log(`发往${multicast_ip} 消息成功`);
 	return true;
 }
 
@@ -148,13 +147,17 @@ function send_file(socket, multicast_ip, port, file) {
 	var file_number = Math.ceil(file_size / 65500);//单个块的大小不能超过64k
 	var file_id = mine.LOCAL_IP + Math.round(Math.random() * 100000).toString();
 	var file_name = path.basename(file)
-	socket.send(`$f+${file_name}+${file_id}+${file_size}+${file_number}`, port, multicast_ip);
-	fs.readFile('文件名', (err, data) => {
-		if (err) throw err;
-		for (var i = 0; i < file_id; i++) {
+	fs.readFile(file, (err, data) => {
+		if (err) {
+			console.log(err);
+			throw err;
+		}else{
+		socket.send(`$f+${file_name}+${file_id}+${file_size}+${file_number}`, port, multicast_ip);
+		for (var i = 0; i < file_number; i++) {
 			socket.send([`$f${i}+${file_id}+`, data.slice(i * 65500, (i + 1) * 65500)], port, multicast_ip)
 		}
 		console.log(`${file_name}已经成功发送`);
+		}
 	});
 	return true;
 }
@@ -306,7 +309,7 @@ function handle_select_file_button() {
 			var multicast_ip = $('#communication_title').html();
 			var default_socket_port = get_default_socket_port(multicast_ip);
 			$('#communication_title').html(multicast_ip + "  " + result.filePaths[0] + "发送中...");
-			send_file(default_socket_port.socket, multicast_ip, default_socket_port.port, result.pathfilePaths[0])
+			send_file(default_socket_port.socket, multicast_ip, default_socket_port.port, result.filePaths[0])
 			$('#communication_title').html(multicast_ip);
 		}
 	}).catch(err => {
