@@ -55,7 +55,7 @@ function join_multicast(ip, port) {
 	sock = dgram.createSocket('udp4');
 	try {
 		sock.bind(port);
-		init_socket(ip,sock,port);
+		init_socket(ip, sock, port);
 		sock.send(`$a+${mine.name}+${mine.LOCAL_IP}`, port, ip)
 		var a = mine.multicast_list.filter((item) => {
 			return item.multicast_ip == ip;
@@ -75,9 +75,13 @@ function join_multicast(ip, port) {
 				multicast_ip_message: []
 			});
 		}
-		else if (a.length == 1) {
-			a[0].port.push(port);
-			a[0].socket.push(sock)
+		else if (a.length >= 1) {
+			mine.multicast_list.forEach(element => {
+				if (element.multicast_ip == ip) {
+					element.port.push(port);
+					element.socket.push(sock);
+				}
+			});
 		}
 	} catch (e) {
 		window.alert("加入多播组出错");

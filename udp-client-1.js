@@ -3,9 +3,9 @@ const readline = require('readline');
 const fs = require("fs");
 const server = dgram.createSocket('udp4');
 const os = require("os");
-const LOCAL_IP = os.networkInterfaces()['WLAN 2'].slice(-1)[0]['address'];
+const LOCAL_IP = os.networkInterfaces()['WLAN'].slice(-1)[0]['address'];
 
-const PORT = 8889;
+const PORT = 8081;
 const multicast_ip = "225.0.0.100";
 const rl = readline.createInterface({
 	input: process.stdin,
@@ -47,6 +47,6 @@ server.on('message', (msg, rinfo) => {
 
 
 rl.on("line", (input) => {
-	server.send(input, PORT, multicast_ip)
+	server.send(input, 8080, multicast_ip)
 });
 

@@ -96,22 +96,18 @@ function init_socket(multicast_ip, socket, port) {
 	socket.on('message', (msg, rinfo) => {
 		var message = msg.toString();
 		console.log(`${rinfo.address}[${rinfo.port}]:	${msg.toString()}`)
-		if (message.substr(0, 2) == "$a") {//如果是心跳信息
-			if (/$a\+.*\+.*/.test(message))
-				get_users(multicast_ip, message);
+		if (message.substr(0, 2) == "$a" && /\$a\+.*\+.*/.test(message)) {//如果是心跳信息
+			get_users(multicast_ip, message);
 		}
-		else if (message.substr(0, 2) == "$b") {//如果是用户离开信息
-			if (/$b\+.*\+.*/.test(message))
-				user_leave(multicast_ip, message);
+		else if (message.substr(0, 2) == "$b" && /\$b\+.*\+.*/.test(message)) {//如果是用户离开信息
+			user_leave(multicast_ip, message);
 		}
 		else if (is_logic_user(multicast_ip, rinfo.address)) {//是逻辑上的用户
-			if (message.substr(0, 3) == '$f') {//如果发送的是文件
-				if (/$f.*\+.*\+.*/.test(message)) {
-					receive_file(msg, rinfo, multicast_ip);
-				}
+			if (message.substr(0, 3) == '$f' && /\$f.*\+.*\+.*/.test(message)) {//如果发送的是文件
+				receive_file(msg, rinfo, multicast_ip);
 			}
-			else receive_text(msg, rinfo, multicast_ip);
 		}
+		else receive_text(msg, rinfo, multicast_ip);
 	});
 
 }
@@ -188,12 +184,18 @@ function get_users(multicast_ip, msg) {
 	ip = msg.split("+")[2];
 	multicast_members.forEach((item, index) => {
 		if (item.multicast_ip == multicast_ip) {
-			if (!(multicast_members[index].member.map((key) => { return key.name; })).contains(name))
-				ulticast_members[index].member.push({
+			if (!(multicast_members[index].member.map((key) => { return key.ip; })).contains(ip))
+				multicast_members[index].member.push({
 					name: name,
 					ip: ip,
 					if_logic: true
 				})
+			else {
+				multicast_members[index].member.forEach((a) => {
+					if (a.ip == ip && a.name != name)
+						a.name = name;
+				})
+			}
 		}
 	})
 }
@@ -281,7 +283,7 @@ function receive_file(msg, rinfo, multicast_ip) {
  * @param {String} ip 
  */
 function receive_text(msg, rinfo, multicast_ip) {
-	received_message.forEach((item) => {
+	received_message.forEach((a) => {
 		if (a.multicast_ip == multicast_ip)
 			a.multicast_ip_message.push({
 				name: get_name(multicast_ip, rinfo.address),
