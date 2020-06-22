@@ -57,19 +57,28 @@ function join_multicast(ip, port) {
 		sock.bind(port);
 		sock.send(`$a+${mine.name}+${mine.LOCAL_IP}`, port, ip)
 		init_socket(ip, sock, port);
-		mine.multicast_list.push({
-			multicast_ip: ip,
-			port: port,
-			socket: sock
+		var a = mine.multicast_list.filter((item) => {
+			return item.multicast_ip == ip;
 		});
-		multicast_members.push({
-			multicast_ip: ip,
-			member: []
-		})
-		received_message.push({
-			multicast_ip: ip,
-			multicast_ip_message: []
-		})
+		if (a.length == 0) {
+			mine.multicast_list.push({
+				multicast_ip: ip,
+				port: [port],
+				socket: [sock]
+			});
+			multicast_members.push({
+				multicast_ip: ip,
+				member: []
+			});
+			received_message.push({
+				multicast_ip: ip,
+				multicast_ip_message: []
+			});
+		}
+		else if (a.length == 1) {
+			a[0].port.push(port);
+			a[0].socket.push(sock)
+		}
 	} catch (e) {
 		window.alert("加入多播组出错");
 		sock.close();
