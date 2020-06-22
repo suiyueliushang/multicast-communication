@@ -247,10 +247,12 @@ function receive_file(msg, rinfo, multicast_ip) {
 	else {
 		var n = Number(msg.toString().split("+")[0].slice(2));
 		var id = msg.toString().split("+")[1];
+		var length=msg.toString().split("+")[0].length+id.length+2;
 		receving_files.forEach((item, index) => {
 			if (item.fileid == id) {
-				item.content[n] = Buffer.from(msg.toString().split("+")[2])
+				item.content[n] = Buffer.from(msg.slice(length));
 				if (n == item.file_number - 1) {//当前文件收取完成
+					console.log(Buffer.from(item.content))
 					fs.writeFileSync(file_path + '/' + item.filename, Buffer.from(item.content));
 					window.alert(`${item.filename}接受完毕`);
 					receive_file.splice(index, 1);
