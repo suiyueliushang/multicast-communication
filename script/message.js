@@ -144,7 +144,7 @@ function send_file(socket, multicast_ip, port, file) {
 		window.alert("文件不得超过1GiB")
 		return false;
 	}
-	var file_number = Math.ceil(file_size / 65500);//单个块的大小不能超过64k
+	var file_number = Math.ceil(file_size / 65000);//单个块的大小不能超过64k
 	var file_id = mine.LOCAL_IP + Math.round(Math.random() * 100000).toString();
 	var file_name = path.basename(file)
 	fs.readFile(file, (err, data) => {
@@ -154,7 +154,7 @@ function send_file(socket, multicast_ip, port, file) {
 		} else {
 			socket.send(`$f+${file_name}+${file_id}+${file_size}+${file_number}`, port, multicast_ip);
 			for (var i = 0; i < file_number; i++) {
-				socket.send([`$f${i}+${file_id}+`, data.slice(i * 65500, (i + 1) * 65500)], port, multicast_ip)
+				socket.send([`$f${i}+${file_id}+`, data.slice(i * 65000, (i + 1) * 65000)], port, multicast_ip)
 			}
 			console.log(`${file_name}已经成功发送`);
 		}
