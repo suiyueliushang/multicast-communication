@@ -4,7 +4,7 @@
 //3、用类还是用对象？？？
 
 const { readFileSync } = require("fs");
-var mtu = 10000
+var mtu = 60000
 
 //自己离开多播组
 //成员管理
