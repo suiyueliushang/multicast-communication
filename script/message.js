@@ -4,10 +4,10 @@
 //3、用类还是用对象？？？
 
 const { readFileSync } = require("fs");
+var mtu = 10000
 
-
-
-
+//自己离开多播组
+//成员管理
 /**
  * 为socket的各种事件添加处理函数
  * @param {String} multicast_ip
@@ -81,19 +81,21 @@ function init_socket(multicast_ip, socket, port) {
 	 * 				$fn+id+第n份文件
 	 */
 	socket.on('message', (msg, rinfo) => {
-		var message = msg.toString();
-		console.log(`${rinfo.address}[${rinfo.port}]:	${msg.toString()}`)
-		if (message.substr(0, 2) == "$a" && /\$a\+.*\+.*/.test(message)) {//如果是心跳信息
-			get_users(multicast_ip, message);
-		}
-		else if (message.substr(0, 2) == "$b" && /\$b\+.*\+.*/.test(message)) {//如果是用户离开信息
-			user_leave(multicast_ip, message);
-		}
-		else if (is_logic_user(multicast_ip, rinfo.address)) {//是逻辑上的用户
-			if (message.substr(0, 2) == '$f' && /\$f.*\+.*\+.*/.test(message)) {//如果发送的是文件
-				receive_file(msg, rinfo, multicast_ip);
+		if (rinfo.address != mine.LOCAL_IP) {
+			var message = msg.toString();
+			console.log(`${rinfo.address}[${rinfo.port}]:	${msg.toString()}`)
+			if (message.substr(0, 2) == "$a" && /\$a\+.*\+.*/.test(message)) {//如果是心跳信息
+				get_users(multicast_ip, message);
 			}
-			else receive_text(msg, rinfo, multicast_ip);
+			else if (message.substr(0, 2) == "$b" && /\$b\+.*\+.*/.test(message)) {//如果是用户离开信息
+				user_leave(multicast_ip, message);
+			}
+			else if (is_logic_user(multicast_ip, rinfo.address)) {//是逻辑上的用户
+				if (message.substr(0, 2) == '$f' && /\$f.*\+.*\+.*/.test(message)) {//如果发送的是文件
+					receive_file(msg, rinfo, multicast_ip);
+				}
+				else receive_text(msg, rinfo, multicast_ip);
+			}
 		}
 	});
 
@@ -144,7 +146,7 @@ function send_file(socket, multicast_ip, port, file) {
 		window.alert("文件不得超过1GiB")
 		return false;
 	}
-	var file_number = Math.ceil(file_size / 60000);//单个块的大小不能超过64k
+	var file_number = Math.ceil(file_size / mtu);//单个块的大小不能超过64k
 	var file_id = mine.LOCAL_IP + Math.round(Math.random() * 100000).toString();
 	var file_name = path.basename(file)
 	fs.readFile(file, (err, data) => {
@@ -154,7 +156,7 @@ function send_file(socket, multicast_ip, port, file) {
 		} else {
 			socket.send(`$f+${file_name}+${file_id}+${file_size}+${file_number}`, port, multicast_ip);
 			for (var i = 0; i < file_number; i++) {
-				socket.send([`$f${i}+${file_id}+`, data.slice(i * 60000, (i + 1) * 60000)], port, multicast_ip)
+				socket.send([`$f${i}+${file_id}+`, data.slice(i * mtu, (i + 1) * mtu)], port, multicast_ip)
 			}
 			console.log(`${file_name}已经成功发送`);
 		}
@@ -247,7 +249,7 @@ function receive_file(msg, rinfo, multicast_ip) {
 	else {
 		var n = Number(msg.toString().split("+")[0].slice(2));
 		var id = msg.toString().split("+")[1];
-		var length=msg.toString().split("+")[0].length+id.length+2;
+		var length = msg.toString().split("+")[0].length + id.length + 2;
 		receving_files.forEach((item, index) => {
 			if (item.fileid == id) {
 				item.content[n] = Buffer.from(msg.slice(length));
@@ -320,3 +322,15 @@ function handle_select_file_button() {
 	});
 }
 
+function leave_multicast(multicast_ip) {
+	mine.multicast_list.forEach((item, index) => {
+		if (item.multicast_ip == multicast_ip) {
+			mine.multicast_list.splice(index, 1);
+		}
+	});
+	multicast_members.forEach((item, index) => {
+		if (item.multicast_ip == multicast_ip) {
+			multicast_members.splice(index, 1);
+		}
+	})
+}

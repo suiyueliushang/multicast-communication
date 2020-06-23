@@ -2,7 +2,6 @@ const os = require("os");
 const $ = require("jquery");
 const fs = require("fs");
 const dgram = require("dgram");
-const { Socket } = require('dgram');
 const sd = require('silly-datetime');
 const path = require("path");
 const remote = require('electron').remote;
