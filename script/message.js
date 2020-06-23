@@ -8,7 +8,6 @@ var mtu = 60000
 
 //自己离开多播组
 //成员管理
-
 /**
  * 为socket的各种事件添加处理函数
  * @param {String} multicast_ip
