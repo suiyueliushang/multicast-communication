@@ -4,7 +4,7 @@
 //3、用类还是用对象？？？
 
 const { readFileSync } = require("fs");
-var mtu = 10000
+var mtu = 60000
 
 //自己离开多播组
 //成员管理
@@ -155,8 +155,11 @@ function send_file(socket, multicast_ip, port, file) {
 			console.log(err);
 			throw err;
 		} else {
+			console.log(`总计${file_number}`)
 			socket.send(`$f+${file_name}+${file_id}+${file_size}+${file_number}`, port, multicast_ip);
 			for (var i = 0; i < file_number; i++) {
+				sleep(500);
+				console.log(`发送${i}`)
 				socket.send([`$f${i}+${file_id}+`, data.slice(i * mtu, (i + 1) * mtu)], port, multicast_ip)
 			}
 			console.log(`${file_name}已经成功发送`);
@@ -316,7 +319,7 @@ function handle_select_file_button() {
 			var default_socket_port = get_default_socket_port(multicast_ip);
 			$('#communication_title').html(multicast_ip + "  " + result.filePaths[0] + "发送中...");
 			send_file(default_socket_port.socket, multicast_ip, default_socket_port.port, result.filePaths[0])
-			$('#communication_title').html(multicast_ip);
+			setTimeout($('#communication_title').html(multicast_ip), 5000);
 		}
 	}).catch(err => {
 		console.log(err)
@@ -334,4 +337,18 @@ function leave_multicast(multicast_ip) {
 			multicast_members.splice(index, 1);
 		}
 	})
+}
+
+/**
+ * 延时函数
+ * @param {Number} numberMillis 
+ */
+function sleep(numberMillis) {
+	var now = new Date();
+	var exitTime = now.getTime() + numberMillis;
+	while (true) {
+		now = new Date();
+		if (now.getTime() > exitTime)
+			return;
+	}
 }
