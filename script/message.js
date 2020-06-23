@@ -83,7 +83,7 @@ function init_socket(multicast_ip, socket, port) {
 	socket.on('message', (msg, rinfo) => {
 		if (rinfo.address != mine.LOCAL_IP) {
 			var message = msg.toString();
-			console.log(`${rinfo.address}[${rinfo.port}]:	${msg.toString()}`)
+			//console.log(`${rinfo.address}[${rinfo.port}]:	${msg.toString()}`)
 			if (message.substr(0, 2) == "$a" && /\$a\+.*\+.*/.test(message)) {//如果是心跳信息
 				get_users(multicast_ip, message);
 			}
@@ -248,6 +248,7 @@ function receive_file(msg, rinfo, multicast_ip) {
 			file_number: a[4],
 			content: new Array(a[4])
 		})
+		console.log(`总计${a[4]}`)
 	}
 	else {
 		var n = Number(msg.toString().split("+")[0].slice(2));
@@ -256,6 +257,7 @@ function receive_file(msg, rinfo, multicast_ip) {
 		receving_files.forEach((item, index) => {
 			if (item.fileid == id) {
 				item.content[n] = Buffer.from(msg.slice(length));
+				console.log(`收到 ${n}`)
 				if (n == item.file_number - 1) {//当前文件收取完成
 					fs.writeFileSync(file_path + '/' + item.filename, Buffer.concat(item.content));
 					window.alert(`${item.filename}接受完毕`);
