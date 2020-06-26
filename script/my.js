@@ -86,8 +86,8 @@ Array.prototype.contains = function (obj) {
 
 
 let menu = new Menu();//new一个菜单//添加菜单功能
-menu.append(new MenuItem({ label: 'MenuItem1', click: function () { console.log('item 1 clicked'); } }));//添加菜单分割线  
+menu.append(new MenuItem({ label: '退出多播', click: function () { leave_multicast(); } }));//添加菜单分割线  
 menu.append(new MenuItem({ type: 'separator' }));//添加菜单功能  
-menu.append(new MenuItem({ label: 'MenuItem2', type: 'checkbox', checked: true, click: printString }));
+menu.append(new MenuItem({ label: '移除成员', type: 'checkbox', checked: true, click: printString }));
 window.addEventListener('contextmenu', function (e) { e.preventDefault(); menu.popup(remote.getCurrentWindow()); }, false);
 function printString() { console.log('item 2 clicked') }

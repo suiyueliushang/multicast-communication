@@ -91,9 +91,12 @@ function init_socket(multicast_ip, socket, port) {
 			else if (message.substr(0, 2) == "$b" && /\$b\+.*\+.*/.test(message)) {//如果是用户离开信息
 				user_leave(multicast_ip, message);
 			}
+			else if(message.substr(0,2)=='$c'&& /\$c\+.*/.test(message)){
+				handle_remove_member(multicast_ip,rinfo,msg);
+			}
 			else if (is_logic_user(multicast_ip, rinfo.address)) {//是逻辑上的用户
 				if (message.substr(0, 2) == '$f' && /\$f.*\+.*\+.*/.test(message)) {//如果发送的是文件
-					receive_file(msg, rinfo, multicast_ip);
+					receive_file(msg, rinfo, multicast_ip);F
 				}
 				else receive_text(msg, rinfo, multicast_ip);
 			}
@@ -328,6 +331,10 @@ function handle_select_file_button() {
 	});
 }
 
+/**
+ * 离开多播，讲成员列表，加入的多播组，以及消息记录中对应的多播组删除
+ * @param {String} multicast_ip 
+ */
 function leave_multicast(multicast_ip) {
 	mine.multicast_list.forEach((item, index) => {
 		if (item.multicast_ip == multicast_ip) {
@@ -335,6 +342,11 @@ function leave_multicast(multicast_ip) {
 		}
 	});
 	multicast_members.forEach((item, index) => {
+		if (item.multicast_ip == multicast_ip) {
+			multicast_members.splice(index, 1);
+		}
+	})
+	received_message.forEach((item,index)=>{
 		if (item.multicast_ip == multicast_ip) {
 			multicast_members.splice(index, 1);
 		}

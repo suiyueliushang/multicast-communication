@@ -152,16 +152,25 @@ function get_one_multicast_member(multicast_ip) {
 }
 
 /**
+ * 接受到移除成员信息时，判断被移除的是不是自己，如果是进行相关操作
+ * @param {String} multicast_ip
+ * @param {Object} rinfo 
+ * @param {Buffer} msg 
+ */
+function handle_remove_member(multicast_ip,rinfo,msg){
+	if(msg.toString().split('+')[1]==mine.LOCAL_IP)
+		remove_multicast_membber(multicast_ip,rinfo.address);
+}
+
+/**
  * 逻辑上的成员管理，黑名单
  * @param {string} multicast_ip 
  * @param {string} member_ip 
  * @returns boolen
  */
 function remove_multicast_membber(multicast_ip, member_ip) {
-	/**???????????????????????????
-	 * 进行逻辑上的删除操作
-	 * ？？？？？？？？？？？？？
-	 */
+	var socket_port=get_default_socket_port(multicast_ip);
+	sockek_port.send(`$c+${member_ip}`,socket_port.port,multicast_ip);
 	for (var i = 0; i < multicast_members.length; i++) {
 		if (multicast_members[i].multicast_ip == multicast_ip) {
 			for (var j = 0; j < multicast_members[i].member.length; j++) {
