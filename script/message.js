@@ -86,6 +86,7 @@ function init_socket(multicast_ip, socket, port) {
 			//console.log(`${rinfo.address}[${rinfo.port}]:	${msg.toString()}`)
 			if (message.substr(0, 2) == "$a" && /\$a\+.*\+.*/.test(message)) {//如果是心跳信息
 				get_users(multicast_ip, message);
+				console.log(`${rinfo.address}[${rinfo.port}]:	${msg.toString()}`)
 			}
 			else if (message.substr(0, 2) == "$b" && /\$b\+.*\+.*/.test(message)) {//如果是用户离开信息
 				user_leave(multicast_ip, message);

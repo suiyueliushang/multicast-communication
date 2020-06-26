@@ -12,8 +12,9 @@ const rl = readline.createInterface({
 	input: process.stdin,
 	output: process.stdout
 });
-const mtu = 10000;
+const mtu = 1500;
 server.bind(PORT); // 随机绑定本机一个端口
+
 
 var receving_files = [//当前正在接收的文件对象
 	{
@@ -35,7 +36,7 @@ server.on('close', () => {
 server.on('listening', () => {
 	console.log('listening...');
 	server.setBroadcast(true);
-	server.setMulticastTTL(10);
+	server.setMulticastTTL(0);
 	server.addMembership(multicast_ip, LOCAL_IP);
 });
 
@@ -117,10 +118,9 @@ function send_file(socket, multicast_ip, port, file) {
 			var i = 0;
 
 			for (; i < file_number; i++) {
-				setTimeout(() => {
-					console.log(`发送 ${i}`)
-					socket.send([`$f${i}+${file_id}+`, data.slice(i * mtu, (i + 1) * mtu)], port, multicast_ip)
-				}, 1000 * i)
+				console.log(`发送 ${i}`)
+				sleep(Math.ceil(Math.random() * 3000))
+				socket.send([`$f${i}+${file_id}+`, data.slice(i * mtu, (i + 1) * mtu)], port, multicast_ip)
 			}
 			console.log(`${file_name}已经成功发送`);
 		}
@@ -131,3 +131,13 @@ function send_file(socket, multicast_ip, port, file) {
 rl.on("line", (input) => {
 	send_file(server, multicast_ip, 8080, input);
 });
+
+function sleep(numberMillis) {
+	var now = new Date();
+	var exitTime = now.getTime() + numberMillis;
+	while (true) {
+		now = new Date();
+		if (now.getTime() > exitTime)
+			return;
+	}
+}
