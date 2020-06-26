@@ -35,7 +35,7 @@ server.on('close', () => {
 server.on('listening', () => {
 	console.log('listening...');
 	server.setBroadcast(true);
-	server.setMulticastTTL(10);
+	server.setMulticastTTL(1);
 	server.addMembership(multicast_ip, LOCAL_IP);
 });
 
@@ -55,6 +55,7 @@ server.on('message', (msg, rinfo) => {
 	// 	console.log(`文件${filename}接受成功`)
 	// }
 	// else
+	console.log("开始接收")
 	receive_file(msg, rinfo, multicast_ip);
 
 });
